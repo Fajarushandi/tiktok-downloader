@@ -4,96 +4,156 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TikTok Downloader</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
-body{margin:0;font-family:'Inter',sans-serif;background:#0d0d0d;color:#fff}
-.header{padding:25px 0;text-align:center;font-size:27px;font-weight:600;color:#00e676}
-.container{max-width:620px;margin:40px auto;padding:25px;background:#151515;border-radius:18px;box-shadow:0 0 30px rgba(0,0,0,0.4)}
-.input-wrap{position:relative}
-input{width:100%;padding:14px 45px 14px 14px;border-radius:12px;background:#222;border:1px solid #333;color:#eee;font-size:16px;outline:none}
-.paste-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:22px;color:#00e676;cursor:pointer}
-button{width:100%;margin-top:15px;padding:14px;background:#00e676;color:#000;border:0;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s}
-button:hover{opacity:.85}
-.result{margin-top:25px;text-align:center}
-.result a{display:block;margin-top:10px;padding:12px 20px;background:#00e676;color:#000;border-radius:12px;font-weight:600;font-size:17px;text-decoration:none}
-.thumb{text-align:center;margin-top:25px}
-.thumb img{width:100%;border-radius:12px}
-.title{margin-top:10px;font-size:17px;font-weight:600}
-.duration{margin-top:5px;color:#bbb}
-.copy-btn,.wa-btn{margin-top:10px;display:inline-block;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;color:#000;background:#00e676;margin-right:5px}
-.copy-btn:hover,.wa-btn:hover{opacity:.85}
-.error{margin-top:20px;color:#ff5252;font-size:15px;font-weight:600;text-align:center}
-.loader{margin-top:25px;display:none;justify-content:center}
-.spinner{width:38px;height:38px;border:4px solid #333;border-top-color:#00e676;border-radius:50%;animation:spin 1s linear infinite}
+body{
+background:#000;
+color:#fff;
+font-family:Arial;
+margin:0;
+padding:20px;
+}
+.container{
+max-width:500px;
+margin:auto;
+text-align:center;
+}
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+font-size:16px;
+outline:none;
+margin-top:12px;
+background:#222;
+color:#fff;
+}
+.paste-btn{
+position:absolute;
+right:18px;
+top:50%;
+transform:translateY(-50%);
+font-size:22px;
+cursor:pointer;
+}
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+font-size:17px;
+margin-top:14px;
+cursor:pointer;
+background:#00ff6a;
+color:#000;
+font-weight:bold;
+box-shadow:0 0 15px #00ff6a;
+transition:0.2s;
+}
+button:hover{
+transform:scale(1.03);
+box-shadow:0 0 25px #00ff6a;
+}
+#load{
+display:none;
+justify-content:center;
+margin-top:18px;
+}
+.loader{
+width:45px;
+height:45px;
+border:4px solid #00ff6a;
+border-radius:50%;
+border-bottom-color:transparent;
+animation:spin 0.8s linear infinite;
+}
 @keyframes spin{to{transform:rotate(360deg)}}
-.footer{text-align:center;margin:40px 0;color:#777;font-size:14px}
+.skeleton{
+width:100%;
+height:260px;
+background:#333;
+border-radius:12px;
+animation:pulse 1s infinite;
+}
+@keyframes pulse{
+0%{opacity:.4}
+50%{opacity:1}
+100%{opacity:.4}
+}
+.thumb img{
+width:100%;
+border-radius:12px;
+margin-top:15px;
+}
+.title{
+font-size:18px;
+margin-top:10px;
+}
+.duration{
+opacity:.8;
+margin-top:5px;
+}
+.result button{
+margin-top:10px;
+}
+.share-btns{
+margin-top:15px;
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+justify-content:center;
+}
+.share-btn{
+padding:9px 14px;
+background:#00ff6a;
+color:#000;
+font-weight:bold;
+border-radius:10px;
+text-decoration:none;
+box-shadow:0 0 10px #00ff6a;
+}
+.history{
+margin-top:25px;
+}
+.history-item{
+background:#111;
+padding:10px;
+border-radius:10px;
+margin-top:8px;
+font-size:14px;
+text-align:left;
+opacity:.8;
+}
 </style>
+
 </head>
 <body>
 
-<div class="header">TikTok Downloader</div>
-
 <div class="container">
+<h1 style="color:#00ff6a;">TikTok Downloader</h1>
 
-<label>Link Video TikTok</label>
-
-<div class="input-wrap">
-<input id="url" placeholder="Tempel link disini">
+<div style="position:relative;">
+<input id="url" placeholder="Tempel link disini...">
 <div class="paste-btn" onclick="paste()">📋</div>
 </div>
 
-<button onclick="downloadAll()">Download</button>
+<button id="processBtn" onclick="process()">Download</button>
 
-<div id="load" class="loader"><div class="spinner"></div></div>
+<div id="load"><div class="loader"></div></div>
 
-<div id="thumb" class="thumb"></div>
+<div id="error"></div>
+<div id="thumb"></div>
 <div id="result" class="result"></div>
-<div id="error" class="error"></div>
+
+<div class="history">
+<h3>History</h3>
+<div id="historyList"></div>
+</div>
 
 </div>
 
-<div class="footer">Max Quality • No Watermark • Video & MP3</div>
-
-<script>
-function showLoad(){document.getElementById("error").innerHTML="";document.getElementById("thumb").innerHTML="";document.getElementById("result").innerHTML="";document.getElementById("load").style.display="flex"}
-function hideLoad(){document.getElementById("load").style.display="none"}
-function errorMsg(t){document.getElementById("error").innerHTML=t}
-
-async function paste(){
-let text=await navigator.clipboard.readText()
-document.getElementById("url").value=text
-}
-
-async function fetchData(u){
-let r=await fetch("https://www.tikwm.com/api/?url="+encodeURIComponent(u))
-let j=await r.json()
-if(j.code!==0)return null
-return j.data
-}
-
-function preview(d){
-document.getElementById("thumb").innerHTML=
-`<img src="${d.cover}">
- <div class="title">${d.title}</div>
- <div class="duration">Durasi: ${d.duration}s</div>
- <a class="copy-btn" onclick="navigator.clipboard.writeText('${d.play}')">Copy Video Link</a>
- <a class="wa-btn" href="https://wa.me/?text=${encodeURIComponent(d.play)}" target="_blank">Share WhatsApp</a>`
-}
-
-async function downloadAll(){
-showLoad()
-let u=document.getElementById("url").value
-if(!u)return hideLoad()
-let d=await fetchData(u)
-hideLoad()
-if(!d)return errorMsg("Link tidak valid atau video tidak ditemukan.")
-preview(d)
-let max=d.play.startsWith("http")?d.play:"https://www.tikwm.com"+d.play
-document.getElementById("result").innerHTML=
-`<a href="${max}" target="_blank">Download Video Max Quality (No WM)</a>
- <a href="${d.music}" target="_blank">Download MP3 (HQ)</a>`
-}
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
