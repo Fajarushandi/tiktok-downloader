@@ -7,110 +7,76 @@
 
 <style>
 body{
-  margin:0;
-  background:#0f1116;
-  font-family:Arial, sans-serif;
-  color:#e5e5e5;
+background:#0f0f12;
+margin:0;
+font-family:Arial, sans-serif;
+color:white;
+text-align:center;
+padding:25px;
 }
 
 .container{
-  max-width:600px;
-  margin:40px auto;
-  padding:20px;
-  text-align:center;
+max-width:420px;
+margin:auto;
 }
 
 h1{
-  color:#1d4ed8;
-  font-size:28px;
-  font-weight:700;
-  margin-bottom:25px;
-}
-
-.input-box{
-  position:relative;
+color:#2d6cff;
+margin-bottom:25px;
 }
 
 input{
-  width:100%;
-  padding:18px 50px 18px 18px;
-  border:none;
-  border-radius:12px;
-  background:#1a1d23;
-  color:#fff;
-  font-size:16px;
-  outline:none;
+width:100%;
+padding:14px;
+border-radius:10px;
+border:none;
+margin-bottom:10px;
+font-size:16px;
+background:#1a1a1f;
+color:white;
 }
 
 .paste-btn{
-  position:absolute;
-  right:12px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  font-size:22px;
+position:absolute;
+right:12px;
+top:12px;
+font-size:20px;
+cursor:pointer;
 }
 
 button{
-  width:100%;
-  padding:16px;
-  margin-top:18px;
-  background:#1d4ed8;
-  color:#fff;
-  border:none;
-  border-radius:12px;
-  font-size:18px;
-  font-weight:bold;
-  cursor:pointer;
+width:100%;
+padding:16px;
+background:#2d6cff;
+color:white;
+border:none;
+border-radius:12px;
+font-size:18px;
+margin-top:10px;
+cursor:pointer;
+font-weight:bold;
 }
 
-button:disabled{
-  opacity:.4;
-}
-
-#load{
-  display:none;
-  margin:20px auto;
-  border:5px solid #1d4ed8;
-  border-top:5px solid transparent;
-  width:45px;
-  height:45px;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-  100%{ transform:rotate(360deg); }
+button:hover{
+background:#2457d4;
 }
 
 #thumb img{
-  width:100%;
-  border-radius:12px;
-  margin-top:25px;
+width:100%;
+border-radius:14px;
+margin-top:20px;
 }
 
-.title{
-  font-size:18px;
-  margin-top:12px;
-}
-
-.duration{
-  font-size:14px;
-  opacity:.7;
-  margin-bottom:20px;
-}
-
-.action-btn{
-  width:100%;
-  padding:16px;
-  margin:10px 0;
-  background:#1d4ed8;
-  border-radius:12px;
-  font-weight:bold;
-  cursor:pointer;
-  display:block;
-  color:#fff;
-  text-decoration:none;
+.result-btn{
+width:100%;
+padding:14px;
+margin-top:10px;
+border-radius:10px;
+background:#2d6cff;
+color:white;
+font-weight:bold;
+border:none;
+font-size:17px;
 }
 </style>
 
@@ -121,21 +87,18 @@ button:disabled{
 
 <h1>TikTok Downloader</h1>
 
-<div class="input-box">
-<input id="url" placeholder="Tempel link di sini...">
-<div class="paste-btn" onclick="paste()">📋</div>
+<div style="position:relative;">
+    <input id="url" placeholder="Tempel link di sini...">
+    <div class="paste-btn" onclick="paste()">📋</div>
 </div>
 
-<button id="processBtn" onclick="process()">Process</button>
-
-<div id="load"></div>
+<button onclick="startProcess()">Process</button>
 
 <div id="thumb"></div>
 <div id="result"></div>
 
 </div>
 
-<script src="script.js"></script>
-
+<script src="script.js?v=1"></script>
 </body>
 </html>
