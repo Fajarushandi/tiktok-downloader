@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Downloader</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',sans-serif;background:#0d0d0d;color:#fff}
+.header{padding:25px 0;text-align:center;font-size:26px;font-weight:600;color:#00e676}
+.container{max-width:600px;margin:40px auto;padding:25px;background:#151515;border-radius:16px;box-shadow:0 0 25px rgba(0,0,0,0.4)}
+label{font-size:15px;margin-bottom:6px;display:block;color:#ccc}
+input{width:100%;padding:14px;border-radius:10px;background:#222;border:1px solid #333;color:#eee;font-size:16px;outline:none}
+.buttons{display:flex;gap:10px;margin-top:15px}
+button{flex:1;padding:14px;background:#00e676;color:#000;border:0;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s}
+button:hover{opacity:.85}
+.result{margin-top:25px;text-align:center}
+.result a{display:block;margin-top:10px;padding:12px 20px;background:#00e676;color:#000;border-radius:10px;font-weight:600;font-size:17px;text-decoration:none}
+.result a:hover{opacity:.85}
+.loader{margin-top:25px;display:flex;justify-content:center}
+.spinner{width:35px;height:35px;border:4px solid #333;border-top-color:#00e676;border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.footer{text-align:center;margin:40px 0;color:#777;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="header">TikTok Downloader</div>
+
+<div class="container">
+<label>Link Video TikTok</label>
+<input id="url" placeholder="Tempel link disini">
+
+<div class="buttons">
+<button onclick="video()">Video HD</button>
+<button onclick="music()">Music MP3</button>
+</div>
+
+<div id="load" class="loader" style="display:none"><div class="spinner"></div></div>
+
+<div class="result" id="result"></div>
+</div>
+
+<div class="footer">No Watermark • HD Video • HQ MP3</div>
+
+<script>
+function showLoad(){document.getElementById("result").innerHTML="";document.getElementById("load").style.display="flex"}
+function hideLoad(){document.getElementById("load").style.display="none"}
+
+async function video(){
+showLoad()
+let u=document.getElementById("url").value
+if(!u)return hideLoad()
+let r=await fetch("https://api.tikmate.app/api/lookup?url="+encodeURIComponent(u))
+let j=await r.json()
+let q720="https://tikmate.app/download/"+j.id+"/"+j.token+"?hd=1"
+let q1080="https://tikmate.app/download/"+j.id+"/"+j.token+"?hd=2"
+let original="https://tikmate.app/download/"+j.id+"/"+j.token
+hideLoad()
+document.getElementById("result").innerHTML=
+`<a href="${original}" target="_blank">Original Quality</a>
+ <a href="${q720}" target="_blank">HD 720p</a>
+ <a href="${q1080}" target="_blank">HD 1080p</a>`
+}
+
+async function music(){
+showLoad()
+let u=document.getElementById("url").value
+if(!u)return hideLoad()
+let r=await fetch("https://api.snaptik.app/v1/music?url="+encodeURIComponent(u))
+let j=await r.json()
+hideLoad()
+document.getElementById("result").innerHTML=`<a href="${j.download}" target="_blank">Download MP3</a>`
+}
+</script>
+
+</body>
+</html>
