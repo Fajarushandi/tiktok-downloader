@@ -2,6 +2,7 @@ function showLoad(){
 document.getElementById("error").innerHTML=""
 document.getElementById("thumb").innerHTML='<div class="skeleton"></div>'
 document.getElementById("result").innerHTML=""
+document.getElementById("shareBox").innerHTML=""
 document.getElementById("load").style.display="flex"
 document.getElementById("processBtn").disabled=true
 }
@@ -11,15 +12,16 @@ document.getElementById("load").style.display="none"
 document.getElementById("processBtn").disabled=false
 }
 
-function errorMsg(t){
+function errorMsg(msg){
 document.getElementById("thumb").innerHTML=""
 document.getElementById("result").innerHTML=""
-document.getElementById("error").innerHTML=t
+document.getElementById("shareBox").innerHTML=""
+document.getElementById("error").innerHTML=msg
 }
 
 async function paste(){
-let text=await navigator.clipboard.readText()
-document.getElementById("url").value=text.trim()
+let txt=await navigator.clipboard.readText()
+document.getElementById("url").value=txt.trim()
 }
 
 function cleanLink(u){
@@ -37,27 +39,20 @@ function preview(d){
 document.getElementById("thumb").innerHTML=
 `<img src="${d.cover}">
  <div class="title">${d.title}</div>
- <div class="duration">${d.duration}s</div>
+ <div class="duration">${d.duration}s</div>`
+}
 
- <div class="share-btns">
- <a class="share-btn" href="https://wa.me/?text=${encodeURIComponent(d.play)}" target="_blank">WhatsApp</a>
- <a class="share-btn" href="https://t.me/share/url?url=${encodeURIComponent(d.play)}" target="_blank">Telegram</a>
- <a class="share-btn" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(d.play)}" target="_blank">X / Twitter</a>
- <a class="share-btn" onclick="downloadThumb('${d.cover}')">Thumbnail</a>
- </div>`
+function downloadFile(url, fname){
+const a=document.createElement("a")
+a.href=url
+a.download=fname
+document.body.appendChild(a)
+a.click()
+a.remove()
 }
 
 function downloadThumb(url){
 downloadFile(url,"thumbnail.jpg")
-}
-
-function downloadFile(url, filename){
-const a=document.createElement("a")
-a.href=url
-a.download=filename
-document.body.appendChild(a)
-a.click()
-a.remove()
 }
 
 function saveHistory(link){
@@ -77,10 +72,26 @@ out+=`<div class="history-item">${x}</div>`
 document.getElementById("historyList").innerHTML=out
 }
 
-function smoothScrollToResults(){
+function smoothScroll(){
 setTimeout(()=>{
 document.getElementById("result").scrollIntoView({behavior:"smooth"})
 },200)
+}
+
+async function shareData(d){
+try{
+if(navigator.share){
+await navigator.share({
+title:d.title,
+text:d.title,
+url:d.play
+})
+}else{
+alert("Perangkat kamu tidak mendukung fitur Share bawaan.")
+}
+}catch(e){
+console.log("Share dibatalkan.")
+}
 }
 
 async function process(){
@@ -90,6 +101,7 @@ let u=document.getElementById("url").value.trim()
 if(!u){ hideLoad(); return }
 
 u=cleanLink(u)
+
 let d=await fetchData(u)
 
 hideLoad()
@@ -98,14 +110,18 @@ if(!d) return errorMsg("Link tidak valid atau video tidak ditemukan.")
 
 preview(d)
 
-let max=d.play.startsWith("http")?d.play:"https://www.tikwm.com"+d.play
+let linkVideo = d.play.startsWith("http") ? d.play : "https://www.tikwm.com" + d.play
 
 document.getElementById("result").innerHTML=
-`<button onclick="downloadFile('${max}','video.mp4')">Download Video Max Quality (No WM)</button>
+`<button onclick="downloadFile('${linkVideo}','video.mp4')">Download Video (No WM)</button>
  <button onclick="downloadFile('${d.music}','music.mp3')">Download MP3 (HQ)</button>`
 
+document.getElementById("shareBox").innerHTML=
+`<button class="share-btn" onclick='shareData(${JSON.stringify(d)})'>Share</button>`
+
 saveHistory(u)
-smoothScrollToResults()
+
+smoothScroll()
 }
 
 loadHistory()
