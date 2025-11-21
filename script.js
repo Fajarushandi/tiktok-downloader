@@ -1,75 +1,76 @@
-function showLoad(){
-  document.getElementById("load").style.display="block"
-  document.getElementById("thumb").innerHTML=""
-  document.getElementById("result").innerHTML=""
-  document.getElementById("processBtn").disabled=true
-}
-
-function hideLoad(){
-  document.getElementById("load").style.display="none"
-  document.getElementById("processBtn").disabled=false
-}
-
 async function paste(){
-  let text = await navigator.clipboard.readText()
-  document.getElementById("url").value = text.trim()
+    try{
+        let t = await navigator.clipboard.readText();
+        document.getElementById("url").value = t.trim();
+    }catch(e){
+        alert("Gagal paste, izinkan clipboard.");
+    }
 }
 
-function cleanLink(u){
-  return u.split("?")[0]
+function clean(u){
+    return u.split("?")[0];
 }
 
 async function fetchData(u){
-  let r = await fetch("https://www.tikwm.com/api/?url=" + encodeURIComponent(u))
-  let j = await r.json()
-  if(j.code !== 0) return null
-  return j.data
+    let r = await fetch("https://www.tikwm.com/api/?url=" + encodeURIComponent(u));
+    let j = await r.json();
+    if(j.code !== 0) return null;
+    return j.data;
 }
 
-function triggerDownload(url, filename){
-  const a = document.createElement("a")
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
+function showLoad(){
+    document.getElementById("result").innerHTML = "Processing...";
+}
+
+async function downloadFile(url, name){
+    try{
+        let r = await fetch(url);
+        let b = await r.blob();
+        let blobUrl = URL.createObjectURL(b);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(()=>URL.revokeObjectURL(blobUrl),4000);
+    }catch(e){
+        alert("Download gagal");
+    }
 }
 
 function preview(d){
-  document.getElementById("thumb").innerHTML =
-  `<img src="${d.cover}">` +
-  `<div class="title">${d.title || "No Title"}</div>` +
-  `<div class="duration">${d.duration}s</div>`
+    document.getElementById("thumb").innerHTML =
+    `<img src="${d.cover}">`;
 
-  let video = d.play
-  let audio = d.music
+    let video = d.play;      // no WM
+    let audio = d.music;     // mp3 hq
 
-  document.getElementById("result").innerHTML = `
-    <a class="action-btn" onclick="triggerDownload('${video}','video.mp4')">
-      Download Video (No WM)
-    </a>
-    <a class="action-btn" onclick="triggerDownload('${audio}','music.mp3')">
-      Download MP3 (HQ)
-    </a>
-  `
+    document.getElementById("result").innerHTML =
+    `
+    <button class="result-btn" onclick="downloadFile('${video}','video.mp4')">
+        Download Video (No WM)
+    </button>
+
+    <button class="result-btn" onclick="downloadFile('${audio}','music.mp3')">
+        Download MP3 (HQ)
+    </button>
+    `;
 }
 
-async function process(){
-  let url = document.getElementById("url").value.trim()
-  if(!url) return
+async function startProcess(){
+    let u = document.getElementById("url").value.trim();
+    if(!u) return alert("Masukkan link dulu");
 
-  showLoad()
+    showLoad();
 
-  url = cleanLink(url)
+    u = clean(u);
 
-  let data = await fetchData(url)
+    let d = await fetchData(u);
+    if(!d){
+        document.getElementById("result").innerHTML = "Gagal mengambil data.";
+        return;
+    }
 
-  hideLoad()
-
-  if(!data){
-    alert("Gagal memproses link!")
-    return
-  }
-
-  preview(data)
+    preview(d);
 }
