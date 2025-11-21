@@ -7,177 +7,110 @@
 
 <style>
 body{
-margin:0;
-background:#0d0d12;
-color:#e6e6e6;
-font-family:'Inter',sans-serif;
-padding:0;
+  margin:0;
+  background:#0f1116;
+  font-family:Arial, sans-serif;
+  color:#e5e5e5;
 }
 
 .container{
-max-width:600px;
-margin:35px auto;
-padding:20px;
+  max-width:600px;
+  margin:40px auto;
+  padding:20px;
+  text-align:center;
 }
 
 h1{
-text-align:center;
-font-size:26px;
-font-weight:700;
-color:#1D4ED8;
-margin-bottom:25px;
+  color:#1d4ed8;
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:25px;
 }
 
-.input-wrap{
-position:relative;
+.input-box{
+  position:relative;
 }
 
 input{
-width:100%;
-padding:14px 48px 14px 14px;
-border-radius:12px;
-border:1px solid #2c2f36;
-background:#14161b;
-color:#fff;
-font-size:16px;
-outline:none;
+  width:100%;
+  padding:18px 50px 18px 18px;
+  border:none;
+  border-radius:12px;
+  background:#1a1d23;
+  color:#fff;
+  font-size:16px;
+  outline:none;
 }
 
 .paste-btn{
-position:absolute;
-right:14px;
-top:50%;
-transform:translateY(-50%);
-font-size:22px;
-cursor:pointer;
-color:#1D4ED8;
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  font-size:22px;
 }
 
 button{
-width:100%;
-padding:14px;
-margin-top:14px;
-border:none;
-border-radius:12px;
-background:#1D4ED8;
-color:white;
-font-size:16px;
-font-weight:600;
-cursor:pointer;
-transition:0.15s;
-box-shadow:0 3px 10px rgba(29,78,216,0.25);
-}
-
-button:hover{
-background:#1A46C7;
+  width:100%;
+  padding:16px;
+  margin-top:18px;
+  background:#1d4ed8;
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 button:disabled{
-background:#334155;
-color:#888;
-box-shadow:none;
+  opacity:.4;
 }
 
 #load{
-display:none;
-justify-content:center;
-margin-top:20px;
-}
-
-.loader{
-width:38px;
-height:38px;
-border-radius:50%;
-border:4px solid #333;
-border-top-color:#1D4ED8;
-animation:spin 0.8s linear infinite;
+  display:none;
+  margin:20px auto;
+  border:5px solid #1d4ed8;
+  border-top:5px solid transparent;
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
 }
 
 @keyframes spin{
-to{ transform:rotate(360deg); }
+  100%{ transform:rotate(360deg); }
 }
 
-.skeleton{
-width:100%;
-height:240px;
-border-radius:12px;
-background:#1a1c22;
-animation:pulse 1.2s infinite;
-}
-
-@keyframes pulse{
-0%{opacity:.4}
-50%{opacity:1}
-100%{opacity:.4}
-}
-
-.thumb img{
-width:100%;
-border-radius:12px;
-margin-top:20px;
+#thumb img{
+  width:100%;
+  border-radius:12px;
+  margin-top:25px;
 }
 
 .title{
-font-size:18px;
-margin-top:10px;
+  font-size:18px;
+  margin-top:12px;
 }
 
 .duration{
-opacity:.7;
-margin-top:5px;
+  font-size:14px;
+  opacity:.7;
+  margin-bottom:20px;
 }
 
-.result button{
-margin-top:12px;
-}
-
-.share-box{
-margin-top:15px;
-text-align:center;
-}
-
-.share-btn{
-display:inline-block;
-padding:12px 18px;
-border-radius:10px;
-background:#1D4ED8;
-color:white;
-text-decoration:none;
-font-size:14px;
-font-weight:600;
-box-shadow:0 3px 10px rgba(29,78,216,0.25);
-cursor:pointer;
-}
-
-#error{
-color:#ff6565;
-margin-top:15px;
-text-align:center;
-font-weight:600;
-}
-
-.history{
-margin-top:30px;
-background:#14161b;
-padding:15px;
-border-radius:12px;
-border:1px solid #2a2d34;
-}
-
-.history h3{
-margin:0 0 10px 0;
-font-size:16px;
-font-weight:600;
-color:#1D4ED8;
-}
-
-.history-item{
-padding:10px;
-border-radius:8px;
-background:#1a1c22;
-margin-top:8px;
-font-size:14px;
-color:#cbd5e1;
+.action-btn{
+  width:100%;
+  padding:16px;
+  margin:10px 0;
+  background:#1d4ed8;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+  display:block;
+  color:#fff;
+  text-decoration:none;
 }
 </style>
 
@@ -188,25 +121,17 @@ color:#cbd5e1;
 
 <h1>TikTok Downloader</h1>
 
-<div class="input-wrap">
+<div class="input-box">
 <input id="url" placeholder="Tempel link di sini...">
 <div class="paste-btn" onclick="paste()">📋</div>
 </div>
 
 <button id="processBtn" onclick="process()">Process</button>
 
-<div id="load"><div class="loader"></div></div>
+<div id="load"></div>
 
-<div id="error"></div>
 <div id="thumb"></div>
-<div id="result" class="result"></div>
-
-<div class="share-box" id="shareBox"></div>
-
-<div class="history">
-<h3>History</h3>
-<div id="historyList"></div>
-</div>
+<div id="result"></div>
 
 </div>
 
